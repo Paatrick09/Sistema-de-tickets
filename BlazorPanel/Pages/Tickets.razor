@@ -1,0 +1,110 @@
+@page "/"
+@inject TicketService TicketService
+@inject NavigationManager Navigation
+@using TicketSystem.Blazor.Models
+
+<PageTitle>Tickets</PageTitle>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1>Gestión de Tickets</h1>
+        <p class="text-muted">Vista general del estado de los servicios</p>
+    </div>
+    <button class="btn btn-primary" @onclick='() => Navigation.NavigateTo("create-ticket")'>
+        <span>+</span> Nuevo Ticket
+    </button>
+</div>
+
+<div class="card-elegant">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <span>Listado de Tickets</span>
+        <div style="width: 200px;">
+            <select class="form-control" @onchange="FiltrarTickets">
+                <option value="">Todos los estados</option>
+                <option value="Abierto">Abierto</option>
+                <option value="EnProceso">En Proceso</option>
+                <option value="Cerrado">Cerrado</option>
+            </select>
+        </div>
+    </div>
+    <div class="card-body p-0">
+        @if (tickets == null)
+        {
+            <div class="p-4 text-center">
+                <p><em>Cargando tickets...</em></p>
+            </div>
+        }
+        else
+        {
+            <table class="table-elegant">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Título</th>
+                        <th>Cliente</th>
+                        <th>Estado</th>
+                        <th>Prioridad</th>
+                        <th>Fecha</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var ticket in ticketsFiltrados)
+                    {
+                        <tr @onclick="() => VerDetalle(ticket.Id)" style="cursor: pointer;">
+                            <td><span class="text-muted">#@ticket.Id</span></td>
+                            <td style="font-weight: 500;">@ticket.Titulo</td>
+                            <td>@ticket.ClienteNombre</td>
+                            <td>
+                                <span class="badge @GetBadgeClass(ticket.Estado)">@ticket.Estado</span>
+                            </td>
+                            <td>@ticket.Prioridad</td>
+                            <td>@ticket.FechaCreacion.ToShortDateString()</td>
+                            <td class="text-end">
+                                <button class="btn btn-secondary" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">Ver</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>
+
+@code {
+    private List<Ticket>? tickets;
+    private List<Ticket> ticketsFiltrados = new();
+    private string filtroEstado = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        tickets = await TicketService.GetTicketsAsync();
+        ticketsFiltrados = tickets;
+    }
+
+    private void FiltrarTickets(ChangeEventArgs e)
+    {
+        filtroEstado = e.Value?.ToString() ?? "";
+        if (string.IsNullOrEmpty(filtroEstado))
+        {
+            ticketsFiltrados = tickets ?? new();
+        }
+        else
+        {
+            ticketsFiltrados = tickets?.Where(t => t.Estado == filtroEstado).ToList() ?? new();
+        }
+    }
+
+    private void VerDetalle(int id)
+    {
+        Navigation.NavigateTo($"ticket/{id}");
+    }
+
+    private string GetBadgeClass(string estado) => estado switch
+    {
+        "Abierto" => "badge-open",
+        "EnProceso" => "badge-process",
+        "Cerrado" => "badge-closed",
+        _ => "badge-secondary"
+    };
+}

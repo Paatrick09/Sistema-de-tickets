@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TicketSystem.Maui.MainPage"
+             Title="Dashboard"
+             BackgroundColor="{StaticResource BackgroundLight}">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="25">
+             
+            <!-- Header -->
+            <Label Text="Panel de Control" 
+                   FontSize="28" 
+                   FontAttributes="Bold"
+                   TextColor="{StaticResource TextPrimary}" />
+
+            <!-- Stats Cards -->
+            <Grid ColumnDefinitions="*,*,*" ColumnSpacing="15">
+                <Border Grid.Column="0" BackgroundColor="{StaticResource StatusAbierto}" StrokeShape="RoundRectangle 10" StrokeThickness="0" Padding="15">
+                    <VerticalStackLayout>
+                        <Label Text="Abiertos" TextColor="{StaticResource StatusAbiertoText}" FontSize="12" FontAttributes="Bold" HorizontalOptions="Center" />
+                        <Label x:Name="lblAbiertos" Text="0" TextColor="{StaticResource StatusAbiertoText}" FontSize="24" FontAttributes="Bold" HorizontalOptions="Center" />
+                    </VerticalStackLayout>
+                </Border>
+                <Border Grid.Column="1" BackgroundColor="{StaticResource StatusEnProceso}" StrokeShape="RoundRectangle 10" StrokeThickness="0" Padding="15">
+                    <VerticalStackLayout>
+                        <Label Text="En Proceso" TextColor="{StaticResource StatusEnProcesoText}" FontSize="12" FontAttributes="Bold" HorizontalOptions="Center" />
+                        <Label x:Name="lblEnProceso" Text="0" TextColor="{StaticResource StatusEnProcesoText}" FontSize="24" FontAttributes="Bold" HorizontalOptions="Center" />
+                    </VerticalStackLayout>
+                </Border>
+                <Border Grid.Column="2" BackgroundColor="{StaticResource StatusCerrado}" StrokeShape="RoundRectangle 10" StrokeThickness="0" Padding="15">
+                    <VerticalStackLayout>
+                        <Label Text="Cerrados" TextColor="{StaticResource StatusCerradoText}" FontSize="12" FontAttributes="Bold" HorizontalOptions="Center" />
+                        <Label x:Name="lblCerrados" Text="0" TextColor="{StaticResource StatusCerradoText}" FontSize="24" FontAttributes="Bold" HorizontalOptions="Center" />
+                    </VerticalStackLayout>
+                </Border>
+            </Grid>
+
+            <Button Text="Actualizar Datos" 
+                    Clicked="OnRefreshClicked"
+                    BackgroundColor="{StaticResource Primary}"
+                    TextColor="White"
+                    CornerRadius="8"
+                    FontAttributes="Bold"/>
+
+            <!-- List Header -->
+            <Label Text="Tickets Recientes" 
+                   FontSize="18" 
+                   FontAttributes="Bold" 
+                   TextColor="{StaticResource TextPrimary}"
+                   Margin="0,10,0,0" />
+
+            <!-- Ticket List -->
+            <CollectionView x:Name="cvTickets" SelectionMode="Single" SelectionChanged="OnTicketSelected">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Border StrokeShape="RoundRectangle 12" Stroke="#E2E8F0" StrokeThickness="1" BackgroundColor="White" Margin="0,0,0,12" Padding="15">
+                            <Grid ColumnDefinitions="*, Auto" RowDefinitions="Auto, Auto">
+                                <Label Grid.Row="0" Grid.Column="0" Text="{Binding Titulo}" FontAttributes="Bold" FontSize="16" TextColor="{StaticResource TextPrimary}" LineBreakMode="TailTruncation" />
+                                <Label Grid.Row="0" Grid.Column="1" Text="{Binding Estado}" FontSize="12" FontAttributes="Bold" TextColor="{StaticResource Secondary}" HorizontalTextAlignment="End" />
+                                
+                                <HorizontalStackLayout Grid.Row="1" Grid.Column="0" Spacing="5" Margin="0,5,0,0">
+                                    <Label Text="{Binding ClienteNombre}" TextColor="{StaticResource TextSecondary}" FontSize="13" />
+                                </HorizontalStackLayout>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>
