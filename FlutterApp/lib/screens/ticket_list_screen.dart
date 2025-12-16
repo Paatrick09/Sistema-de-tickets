@@ -101,61 +101,49 @@ class _TicketCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      // margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4), // Handled by theme or parent
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(8),
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    '#${ticket.id}',
-                    style: TextStyle(
-                      color: Colors.grey[500],
-                      fontWeight: FontWeight.bold,
-                      fontSize: 12,
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '#${ticket.id} • ${ticket.clienteNombre}',
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color: const Color(0xFF64748B), // Slate 500
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          ticket.titulo,
+                          style: Theme.of(context).textTheme.titleMedium,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
                     ),
                   ),
+                  const SizedBox(width: 12),
                   _StatusBadge(status: ticket.estado),
                 ],
               ),
-              const SizedBox(height: 8),
-              Text(
-                ticket.titulo,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: Color(0xFF1E293B),
-                ),
-              ),
-              const SizedBox(height: 4),
+              const SizedBox(height: 12),
               Row(
                 children: [
-                  Icon(Icons.person_outline, size: 14, color: Colors.grey[500]),
-                  const SizedBox(width: 4),
-                  Text(
-                    ticket.clienteNombre,
-                    style: TextStyle(color: Colors.grey[600], fontSize: 13),
-                  ),
+                  _PriorityTag(priority: ticket.prioridad),
                   const Spacer(),
-                  Icon(
-                    Icons.flag_outlined, 
-                    size: 14, 
-                    color: _getPriorityColor(ticket.prioridad)
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    ticket.prioridad,
-                    style: TextStyle(
-                      color: _getPriorityColor(ticket.prioridad), 
-                      fontSize: 13,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
+                  Icon(Icons.chevron_right, size: 16, color: Colors.grey[400]),
                 ],
               ),
             ],
@@ -164,14 +152,38 @@ class _TicketCard extends StatelessWidget {
       ),
     );
   }
+}
 
-  Color _getPriorityColor(String priority) {
+class _PriorityTag extends StatelessWidget {
+  final String priority;
+
+  const _PriorityTag({required this.priority});
+
+  @override
+  Widget build(BuildContext context) {
+    Color color;
     switch (priority) {
-      case 'Alta': return Colors.red;
-      case 'Media': return Colors.orange;
-      case 'Baja': return Colors.green;
-      default: return Colors.grey;
+      case 'Alta': color = const Color(0xFFEF4444); break; // Red 500
+      case 'Media': color = const Color(0xFFF59E0B); break; // Amber 500
+      case 'Baja': color = const Color(0xFF10B981); break; // Emerald 500
+      default: color = const Color(0xFF94A3B8); break;
     }
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(Icons.flag, size: 14, color: color),
+        const SizedBox(width: 4),
+        Text(
+          priority,
+          style: TextStyle(
+            color: color,
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ],
+    );
   }
 }
 
@@ -184,34 +196,40 @@ class _StatusBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     Color bg;
     Color fg;
+    Color border;
 
     switch (status) {
       case 'Abierto':
-        bg = Colors.red[50]!;
-        fg = Colors.red[700]!;
+        bg = Colors.white;
+        fg = const Color(0xFFEF4444);
+        border = const Color(0xFFFECACA); // Red 200
         break;
       case 'EnProceso':
-        bg = Colors.amber[50]!;
-        fg = Colors.amber[800]!;
+        bg = Colors.white;
+        fg = const Color(0xFFD97706); // Amber 600
+        border = const Color(0xFFFDE68A); // Amber 200
         break;
       case 'Cerrado':
-        bg = Colors.green[50]!;
-        fg = Colors.green[800]!;
+        bg = Colors.white;
+        fg = const Color(0xFF059669); // Emerald 600
+        border = const Color(0xFFA7F3D0); // Emerald 200
         break;
       default:
-        bg = Colors.grey[100]!;
-        fg = Colors.grey[700]!;
+        bg = Colors.white;
+        fg = const Color(0xFF475569);
+        border = const Color(0xFFE2E8F0);
     }
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
       decoration: BoxDecoration(
         color: bg,
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(4),
+        border: Border.all(color: border),
       ),
       child: Text(
-        status,
-        style: TextStyle(color: fg, fontSize: 11, fontWeight: FontWeight.bold),
+        status.toUpperCase(),
+        style: TextStyle(color: fg, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 0.5),
       ),
     );
   }

@@ -58,8 +58,8 @@ Abre `http://localhost:4200`.
 ```bash
 cd FlutterApp
 flutter pub get
-flutter run
-/Users/patrick/develop/flutter/bin/flutter run
+flutter run -d chrome
+
 ```
 
 **Nota:** Si usas Android Emulator, asegúrate de cambiar la URL en `lib/services/ticket_service.dart` a `http://10.0.2.2:5000`.
@@ -72,5 +72,5 @@ Abre la solución o el proyecto en Visual Studio 2022 y ejecuta el proyecto `Tic
 
 1. **Crear Ticket (Angular):** Ve al portal Angular, llena el formulario y crea un ticket.
 2. **Ver Ticket (Blazor):** Ve al panel Blazor, refresca la lista y verás el nuevo ticket. Entra al detalle.
-3. **Cambiar Estado (Flutter/MAUI):** Abre la app móvil o dashboard, busca el ticket y cambia su estado a "En Proceso" o "Cerrado".
+3. **Cambiar Estado (Flutter/MAUI):** Abre la app móvil o dashboard, busca el ticket y cambia su estado a "En Proceso" o "Cerrado". Aun Maui necesita mejoras no esta funcionando 
 4. **Verificar:** Vuelve a Blazor o Angular y verifica que el estado se haya actualizado.

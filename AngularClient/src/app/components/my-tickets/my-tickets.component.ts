@@ -13,11 +13,11 @@ import { TicketService, Ticket } from '../../services/ticket.service';
         <h2 class="mb-4">Mis Tickets</h2>
         
         <div class="mb-4">
-          <label class="form-label">Buscar por nombre de cliente:</label>
+          <label class="form-label">Buscar por nombre de cliente</label>
           <div class="input-group">
             <input type="text" class="form-control" [(ngModel)]="clienteFiltro" placeholder="Ingrese su nombre">
             <button class="btn btn-outline-secondary" type="button" (click)="filtrar()">
-              🔍 Buscar
+              Buscar
             </button>
           </div>
         </div>
@@ -39,10 +39,10 @@ import { TicketService, Ticket } from '../../services/ticket.service';
                 <td class="fw-bold text-dark">{{t.titulo}}</td>
                 <td>
                   <span [ngClass]="{
-                    'badge bg-danger bg-opacity-10 text-danger border border-danger': t.estado === 'Abierto',
-                    'badge bg-warning bg-opacity-10 text-warning border border-warning': t.estado === 'EnProceso',
-                    'badge bg-success bg-opacity-10 text-success border border-success': t.estado === 'Cerrado'
-                  }" class="px-2 py-1 rounded-pill">{{t.estado}}</span>
+                    'badge-custom badge-open': t.estado === 'Abierto',
+                    'badge-custom badge-process': t.estado === 'EnProceso',
+                    'badge-custom badge-closed': t.estado === 'Cerrado'
+                  }">{{t.estado}}</span>
                 </td>
                 <td>{{t.prioridad}}</td>
                 <td class="text-secondary">{{t.fechaCreacion | date}}</td>
@@ -51,8 +51,8 @@ import { TicketService, Ticket } from '../../services/ticket.service';
           </table>
         </div>
         
-        <div *ngIf="ticketsFiltrados.length === 0 && searched" class="alert alert-light text-center border p-4">
-          🤷‍♂️ No se encontraron tickets para este cliente.
+        <div *ngIf="ticketsFiltrados.length === 0 && searched" class="text-center p-4 border rounded bg-light text-muted">
+          No se encontraron tickets para este cliente.
         </div>
       </div>
     </div>

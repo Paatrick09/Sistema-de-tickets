@@ -82,7 +82,7 @@ class _TicketDetailScreenState extends State<TicketDetailScreen> {
   Widget _buildInfoCard() {
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(20.0),
+        padding: const EdgeInsets.all(24.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -90,39 +90,59 @@ class _TicketDetailScreenState extends State<TicketDetailScreen> {
               children: [
                 _StatusBadge(status: _ticket.estado),
                 const Spacer(),
-                Text(_ticket.prioridad.toUpperCase(), style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, letterSpacing: 1.0, color: Colors.grey)),
+                Text(
+                  'PRIORIDAD ${_ticket.prioridad.toUpperCase()}', 
+                  style: TextStyle(
+                    fontSize: 11, 
+                    fontWeight: FontWeight.bold, 
+                    letterSpacing: 1.0, 
+                    color: _getPriorityColor(_ticket.prioridad)
+                  )
+                ),
               ],
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 20),
             Text(
               _ticket.titulo,
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: const Color(0xFF1E293B),
+                fontSize: 20,
+                height: 1.3,
               ),
             ),
+            const SizedBox(height: 32),
+            _buildLabel('SOLICITADO POR'),
+            Text(_ticket.clienteNombre, style: Theme.of(context).textTheme.bodyLarge),
             const SizedBox(height: 24),
-            _buildLabel('CLIENTE'),
-            Text(_ticket.clienteNombre, style: const TextStyle(fontSize: 16)),
-            const SizedBox(height: 16),
-            _buildLabel('DESCRIPCIÓN'),
-            Text(_ticket.descripcion, style: const TextStyle(fontSize: 15, height: 1.5, color: Color(0xFF475569))),
+            _buildLabel('DESCRIPCIÓN DETALLADA'),
+            Text(
+              _ticket.descripcion, 
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(height: 1.6)
+            ),
           ],
         ),
       ),
     );
   }
 
+  Color _getPriorityColor(String priority) {
+    switch (priority) {
+      case 'Alta': return const Color(0xFFEF4444);
+      case 'Media': return const Color(0xFFF59E0B);
+      case 'Baja': return const Color(0xFF10B981);
+      default: return Colors.grey;
+    }
+  }
+
   Widget _buildLabel(String label) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 6),
+      padding: const EdgeInsets.only(bottom: 8),
       child: Text(
         label,
         style: const TextStyle(
           fontSize: 11,
-          fontWeight: FontWeight.bold,
-          color: Color(0xFF94A3B8),
-          letterSpacing: 0.5,
+          fontWeight: FontWeight.w700,
+          color: Color(0xFF94A3B8), // Slate 400
+          letterSpacing: 0.8,
         ),
       ),
     );
@@ -136,8 +156,8 @@ class _TicketDetailScreenState extends State<TicketDetailScreen> {
           child: ElevatedButton(
             onPressed: () => _updateStatus('EnProceso'),
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.amber[50],
-              foregroundColor: Colors.amber[900],
+              backgroundColor: const Color(0xFF334155), // Slate 700
+              foregroundColor: Colors.white,
             ),
             child: const Text('MARCAR EN PROCESO'),
           ),
@@ -145,11 +165,14 @@ class _TicketDetailScreenState extends State<TicketDetailScreen> {
         const SizedBox(height: 12),
         SizedBox(
           width: double.infinity,
-          child: ElevatedButton(
+          child: OutlinedButton(
             onPressed: () => _updateStatus('Cerrado'),
-             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF10B981), // Emerald 500
-              foregroundColor: Colors.white,
+             style: OutlinedButton.styleFrom(
+              foregroundColor: const Color(0xFF0F172A), // Slate 900
+              side: const BorderSide(color: Color(0xFFCBD5E1)),
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+              textStyle: const TextStyle(fontWeight: FontWeight.w600, letterSpacing: 0.5),
             ),
             child: const Text('CERRAR TICKET'),
           ),
@@ -168,30 +191,36 @@ class _StatusBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     Color bg;
     Color fg;
+    Color border;
 
     switch (status) {
       case 'Abierto':
-        bg = Colors.red[50]!;
-        fg = Colors.red[700]!;
+        bg = Colors.white;
+        fg = const Color(0xFFEF4444);
+        border = const Color(0xFFFECACA); 
         break;
       case 'EnProceso':
-        bg = Colors.amber[50]!;
-        fg = Colors.amber[800]!;
+        bg = Colors.white;
+        fg = const Color(0xFFD97706); 
+        border = const Color(0xFFFDE68A); 
         break;
       case 'Cerrado':
-        bg = Colors.green[50]!;
-        fg = Colors.green[800]!;
+        bg = Colors.white;
+        fg = const Color(0xFF059669); 
+        border = const Color(0xFFA7F3D0); 
         break;
       default:
-        bg = Colors.grey[100]!;
-        fg = Colors.grey[700]!;
+        bg = Colors.white;
+        fg = const Color(0xFF475569);
+        border = const Color(0xFFE2E8F0);
     }
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
         color: bg,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(4),
+        border: Border.all(color: border),
       ),
       child: Text(
         status.toUpperCase(),
